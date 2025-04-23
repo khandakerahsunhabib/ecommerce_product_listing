@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-class ProductListingAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const ProductListingAppBar({
-    super.key,
-  });
+
+class ProductListingAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
+  const ProductListingAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,11 @@ class ProductListingAppBar extends StatelessWidget implements PreferredSizeWidge
           decoration: InputDecoration(
             hintText: 'Search Anything...',
             hintStyle: TextStyle(color: Colors.grey.shade500),
-            prefixIcon: Icon(Icons.search, color: Colors.grey.shade700),
+            prefixIcon: Icon(
+              Icons.search_rounded,
+              color: Colors.grey.shade600,
+              size: 30,
+            ),
             border: InputBorder.none,
             contentPadding: const EdgeInsets.symmetric(vertical: 10),
           ),
