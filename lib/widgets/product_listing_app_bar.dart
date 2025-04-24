@@ -2,11 +2,32 @@ import 'package:flutter/material.dart';
 
 class ProductListingAppBar extends StatelessWidget
     implements PreferredSizeWidget {
-  const ProductListingAppBar({super.key});
+  const ProductListingAppBar({
+    super.key,
+    required this.child,
+    this.icon,
+    this.onTap,
+  });
+
+  final Widget child;
+  final IconData? icon;
+  final Function? onTap;
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      actions: [
+        icon == null
+            ? SizedBox()
+            : Padding(
+              padding: EdgeInsets.only(right: 10),
+              child: IconButton(
+                onPressed: () => onTap?.call(),
+                icon: Icon(icon, size: 40, color: Colors.grey),
+              ),
+            ),
+      ],
+      automaticallyImplyLeading: false,
       title: Container(
         height: 40,
         decoration: BoxDecoration(
@@ -14,33 +35,10 @@ class ProductListingAppBar extends StatelessWidget
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: Colors.grey.shade300),
         ),
-        child: _buildSearchFieldContents(context),
+        child: child,
       ),
       backgroundColor: Colors.white,
       elevation: 0,
-    );
-  }
-
-  Widget _buildSearchFieldContents(BuildContext context) {
-    return GestureDetector(
-      onTap: () {},
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Icon(Icons.search_rounded, color: Colors.grey, size: 30),
-            const SizedBox(width: 10),
-            Text(
-              'Search Anything...',
-              style: Theme.of(
-                context,
-              ).textTheme.bodyLarge!.copyWith(color: Colors.grey),
-            ),
-          ],
-        ),
-      ),
     );
   }
 

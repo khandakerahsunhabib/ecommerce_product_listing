@@ -1,13 +1,17 @@
+import 'package:ecommerce_product_listing/screens/search/search_screen.dart';
 import 'package:ecommerce_product_listing/widgets/product_listing_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
+  static const String name = '/';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ProductListingAppBar(),
+      appBar: ProductListingAppBar(child: _buildSearchFieldContents(context)),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: GridView.builder(
@@ -21,6 +25,31 @@ class HomeScreen extends StatelessWidget {
           itemBuilder: (context, index) {
             return _buildProductItemCard();
           },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchFieldContents(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Get.to(() => SearchScreen(), transition: Transition.rightToLeft);
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(Icons.search_rounded, color: Colors.grey, size: 30),
+            const SizedBox(width: 10),
+            Text(
+              'Search Anything...',
+              style: Theme.of(
+                context,
+              ).textTheme.bodyLarge!.copyWith(color: Colors.grey),
+            ),
+          ],
         ),
       ),
     );
