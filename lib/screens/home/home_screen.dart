@@ -4,37 +4,55 @@ import 'package:ecommerce_product_listing/widgets/product_listing_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});
 
   static const String name = '/';
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   final HomeScreenController _homeScreenController =
       Get.find<HomeScreenController>();
+
+  @override
+  void initState() {
+    super.initState();
+    _homeScreenController.getProductList();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: ProductListingAppBar(child: _buildSearchFieldContents(context)),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: GridView.builder(
-                itemCount: 10,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 12,
-                  crossAxisSpacing: 12,
-                  mainAxisExtent: 250,
-                ),
-                itemBuilder: (context, index) {
-                  return _buildProductItemCard();
-                },
+      body: GetBuilder<HomeScreenController>(
+        builder: (controller) {
+          if (controller.inProgress) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (controller.errorMessage != null) {
+            return Center(child: Text(controller.errorMessage!));
+          }
+
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GridView.builder(
+              itemCount: controller.productsList.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 12,
+                crossAxisSpacing: 12,
+                mainAxisExtent: 250,
               ),
+              itemBuilder: (context, index) {
+                return _buildProductItemCard(controller.productsList[index]);
+              },
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -47,10 +65,8 @@ class HomeScreen extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(Icons.search_rounded, color: Colors.grey, size: 30),
+            const Icon(Icons.search_rounded, color: Colors.grey, size: 30),
             const SizedBox(width: 10),
             Text(
               'Search Anything...',
@@ -64,105 +80,99 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProductItemCard() {
-    return Stack(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 6,
-                offset: Offset(0, 3),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildProductItemCard(product) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: const [
+          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+        ],
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Stack(
             children: [
-              Stack(
-                children: [
-                  ClipRRect(
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(8),
-                    ),
-                    child: Image.network(
-                      'https://elitelifestyle.com.bd/wp-content/uploads/2024/02/1.jpg',
-                      height: 160,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: Icon(Icons.favorite_border, color: Colors.grey),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "T-shirt",
-                  style: const TextStyle(fontSize: 13),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+              ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(8),
+                ),
+                child: Image.network(
+                  product.image ?? '',
+                  height: 160,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  errorBuilder:
+                      (_, __, ___) => const Icon(Icons.broken_image, size: 100),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Row(
-                  children: [
-                    Text(
-                      '\$${200}',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      '\$${300}',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        decoration: TextDecoration.lineThrough,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      '${5}% OFF',
-                      style: const TextStyle(fontSize: 11, color: Colors.red),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 4, left: 8),
-                child: Row(
-                  children: [
-                    const Icon(Icons.star, color: Colors.orange, size: 16),
-                    const SizedBox(width: 4),
-                    Text(
-                      '${4} ',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Text(
-                      '(${3})',
-                      style: const TextStyle(fontSize: 11, color: Colors.grey),
-                    ),
-                  ],
-                ),
+              const Positioned(
+                top: 8,
+                right: 8,
+                child: Icon(Icons.favorite_border, color: Colors.grey),
               ),
             ],
           ),
-        ),
-      ],
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              product.title ?? '',
+              style: const TextStyle(fontSize: 13),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Row(
+              children: [
+                Text(
+                  '\$${product.price?.toStringAsFixed(2) ?? '0.00'}',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  '\$${(product.price != null ? product.price! + 50 : 0).toStringAsFixed(2)}',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    decoration: TextDecoration.lineThrough,
+                    color: Colors.grey,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                const Text(
+                  '10% OFF',
+                  style: TextStyle(fontSize: 11, color: Colors.red),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 4, left: 8),
+            child: Row(
+              children: [
+                const Icon(Icons.star, color: Colors.orange, size: 16),
+                const SizedBox(width: 4),
+                Text(
+                  '${product.rating?.rate ?? 0}',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Text(
+                  ' (${product.rating?.count ?? 0})',
+                  style: const TextStyle(fontSize: 11, color: Colors.grey),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

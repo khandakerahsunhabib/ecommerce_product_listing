@@ -25,8 +25,8 @@ class HomeScreenController extends GetxController {
       url: Urls.productList,
     );
     if (response.isSuccess) {
-      final Products products = Products.fromJson(response.responseData);
-      _productsList.add(products);
+      final List<dynamic> data = response.responseData;
+      _productsList = data.map((e) => Products.fromJson(e)).toList();
       isSuccess = true;
     } else {
       _errorMessage = response.errorMessage;
