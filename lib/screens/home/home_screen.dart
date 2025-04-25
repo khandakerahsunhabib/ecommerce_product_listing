@@ -1,12 +1,15 @@
+import 'package:ecommerce_product_listing/controllers/home_screen_controller.dart';
 import 'package:ecommerce_product_listing/screens/search/search_screen.dart';
 import 'package:ecommerce_product_listing/widgets/product_listing_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  HomeScreen({super.key});
 
   static const String name = '/';
+  final HomeScreenController _homeScreenController =
+      Get.find<HomeScreenController>();
 
   @override
   Widget build(BuildContext context) {
@@ -14,17 +17,23 @@ class HomeScreen extends StatelessWidget {
       appBar: ProductListingAppBar(child: _buildSearchFieldContents(context)),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: GridView.builder(
-          itemCount: 10,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 12,
-            crossAxisSpacing: 12,
-            childAspectRatio: 0.75,
-          ),
-          itemBuilder: (context, index) {
-            return _buildProductItemCard();
-          },
+        child: Column(
+          children: [
+            Expanded(
+              child: GridView.builder(
+                itemCount: 10,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 12,
+                  mainAxisExtent: 250,
+                ),
+                itemBuilder: (context, index) {
+                  return _buildProductItemCard();
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -61,7 +70,7 @@ class HomeScreen extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
+
             boxShadow: const [
               BoxShadow(
                 color: Colors.black12,
