@@ -14,13 +14,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final HomeScreenController _homeScreenController =
-      Get.find<HomeScreenController>();
+  final HomeScreenController _controller = Get.find<HomeScreenController>();
 
   @override
   void initState() {
     super.initState();
-    _homeScreenController.getProductList();
+    _controller.getProductList();
   }
 
   @override
@@ -39,17 +38,27 @@ class _HomeScreenState extends State<HomeScreen> {
 
           return Padding(
             padding: const EdgeInsets.all(8.0),
-            child: GridView.builder(
-              itemCount: controller.productsList.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 12,
-                crossAxisSpacing: 12,
-                mainAxisExtent: 250,
-              ),
-              itemBuilder: (context, index) {
-                return _buildProductItemCard(controller.productsList[index]);
-              },
+            child: Column(
+              children: [
+                Expanded(
+                  child: GridView.builder(
+                    itemCount: controller.productsList.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 12,
+                          crossAxisSpacing: 12,
+                          mainAxisExtent: 250,
+                        ),
+                    itemBuilder: (context, index) {
+                      return _buildProductItemCard(
+                        controller.productsList[index],
+                      );
+                    },
+                  ),
+                ),
+                _buildPaginationButtons(controller),
+              ],
             ),
           );
         },
@@ -173,6 +182,30 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildPaginationButtons(HomeScreenController controller) {
+    return Wrap(
+      spacing: 8,
+      alignment: WrapAlignment.center,
+      children: List.generate(controller.totalPages, (index) {
+        final pageNum = index + 1;
+        final isSelected = pageNum == controller.currentPage;
+
+        return ElevatedButton(
+          onPressed: () => controller.changePage(pageNum),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: isSelected ? Colors.blue : Colors.grey[200],
+            foregroundColor: isSelected ? Colors.white : Colors.black,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+          child: Text('$pageNum'),
+        );
+      }),
     );
   }
 }
