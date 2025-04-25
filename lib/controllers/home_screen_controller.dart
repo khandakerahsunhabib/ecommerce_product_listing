@@ -13,12 +13,18 @@ class HomeScreenController extends GetxController {
 
   List<Products> _allProducts = [];
   List<Products> _visibleProducts = [];
+  List<Products> _searchResults = [];
+
+  List<Products> get allProducts => _allProducts;
+
+  bool _isSearching = false;
 
   bool get inProgress => _inProgress;
 
   String? get errorMessage => _errorMessage;
 
-  List<Products> get productsList => _visibleProducts;
+  List<Products> get productsList =>
+      _isSearching ? _searchResults : _visibleProducts;
 
   int get currentPage => _currentPage;
 
@@ -61,5 +67,30 @@ class HomeScreenController extends GetxController {
       start,
       end > _allProducts.length ? _allProducts.length : end,
     );
+  }
+
+  void searchProducts(String query) {
+    if (query.isEmpty) {
+      _isSearching = false;
+      _searchResults.clear();
+    } else {
+      _isSearching = true;
+      _searchResults = _allProducts
+          .where(
+            (product) =>
+            product.title
+                .toString()
+                .toLowerCase()
+                .contains(query.toLowerCase()),
+      )
+          .toList();
+    }
+    update();
+  }
+
+  void clearSearch() {
+    _isSearching = false;
+    _searchResults.clear();
+    update();
   }
 }

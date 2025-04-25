@@ -134,30 +134,32 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Row(
-              children: [
-                Text(
-                  '\$${product.price?.toStringAsFixed(2) ?? '0.00'}',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
+            child: FittedBox(
+              child: Row(
+                children: [
+                  Text(
+                    '\$${product.price?.toStringAsFixed(2) ?? '0.00'}',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  '\$${(product.price != null ? product.price! + 50 : 0).toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    decoration: TextDecoration.lineThrough,
-                    color: Colors.grey,
+                  const SizedBox(width: 6),
+                  Text(
+                    '\$${(product.price != null ? product.price! + 50 : 0).toStringAsFixed(2)}',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      decoration: TextDecoration.lineThrough,
+                      color: Colors.grey,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 6),
-                const Text(
-                  '10% OFF',
-                  style: TextStyle(fontSize: 11, color: Colors.red),
-                ),
-              ],
+                  const SizedBox(width: 6),
+                  const Text(
+                    '10% OFF',
+                    style: TextStyle(fontSize: 11, color: Colors.red),
+                  ),
+                ],
+              ),
             ),
           ),
           Padding(
